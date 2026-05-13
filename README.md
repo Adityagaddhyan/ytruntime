@@ -3,11 +3,13 @@
 [![CI](https://github.com/Adityagaddhyan/ytruntime/actions/workflows/ci.yml/badge.svg)](https://github.com/Adityagaddhyan/ytruntime/actions/workflows/ci.yml)
 [![PyPI Version](https://img.shields.io/pypi/v/ytruntime)](https://pypi.org/project/ytruntime/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/ytruntime)](https://pypi.org/project/ytruntime/)
+[![Homebrew Tap](https://img.shields.io/badge/Homebrew-Adityagaddhyan%2Ftap-fbb040?logo=homebrew&logoColor=000)](https://github.com/Adityagaddhyan/homebrew-tap)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## TL;DR
 
 ```bash
-uv tool install git+https://github.com/Adityagaddhyan/ytruntime.git
+brew install Adityagaddhyan/tap/ytruntime
 ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID"
 ```
 
@@ -29,10 +31,10 @@ table. It uses `yt-dlp` for metadata extraction and `rich` for terminal output.
 | --- | --- | --- |
 | `uv tool` from GitHub | `uv tool install git+https://github.com/Adityagaddhyan/ytruntime.git` | Works now |
 | `pipx` from GitHub | `pipx install git+https://github.com/Adityagaddhyan/ytruntime.git` | Works now |
-| `uv tool` from PyPI | `uv tool install ytruntime` | After PyPI release |
-| `pipx` from PyPI | `pipx install ytruntime` | After PyPI release |
-| `pip` from PyPI | `pip install ytruntime` | After PyPI release |
-| Homebrew | `brew install ytruntime` | Planned |
+| Homebrew tap | `brew install Adityagaddhyan/tap/ytruntime` | Works now |
+| `uv tool` from PyPI | `uv tool install ytruntime` | Works now |
+| `pipx` from PyPI | `pipx install ytruntime` | Works now |
+| `pip` from PyPI | `pip install ytruntime` | Works now |
 
 Requires Python 3.11+.
 
@@ -48,6 +50,23 @@ Or let uv update your shell configuration:
 ```bash
 uv tool update-shell
 ```
+
+### Homebrew
+
+`ytruntime` is available from the `Adityagaddhyan/tap` Homebrew tap:
+
+```bash
+brew install Adityagaddhyan/tap/ytruntime
+```
+
+You can also tap the repository first:
+
+```bash
+brew tap Adityagaddhyan/tap
+```
+
+This is not a `homebrew/core` formula yet, so use the tap-qualified formula
+name in public docs and scripts.
 
 ## Usage
 
@@ -165,27 +184,27 @@ uv run ruff check .
 uv run pytest
 uv build
 git status
-git tag v0.1.0
+git tag vX.Y.Z
 git push origin main
-git push origin v0.1.0
+git push origin vX.Y.Z
 ```
 
 Use a new tag for every release. PyPI does not allow replacing an already
 published version, so update `version` in `pyproject.toml` before tagging.
 
-## Homebrew Prep
+## Homebrew Tap Maintenance
 
-Homebrew support should be added after the first GitHub release exists.
-
-Planned flow:
+The Homebrew formula lives in
+[`Adityagaddhyan/homebrew-tap`](https://github.com/Adityagaddhyan/homebrew-tap).
+For a new release, update the formula URL and SHA256 to match the published
+PyPI source distribution, then test the tap formula locally:
 
 ```bash
-brew tap Adityagaddhyan/tap
-brew install ytruntime
+brew uninstall ytruntime || true
+brew install --build-from-source Adityagaddhyan/tap/ytruntime
+brew test Adityagaddhyan/tap/ytruntime
+brew audit --strict Adityagaddhyan/tap/ytruntime
 ```
-
-The future tap repo should be named `Adityagaddhyan/homebrew-tap` and contain a
-formula that installs the released wheel or source archive from GitHub/PyPI.
 
 ## License
 
