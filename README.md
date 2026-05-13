@@ -1,8 +1,8 @@
 # ytruntime
 
 [![CI](https://github.com/Adityagaddhyan/ytruntime/actions/workflows/ci.yml/badge.svg)](https://github.com/Adityagaddhyan/ytruntime/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/ytruntime.svg)](https://pypi.org/project/ytruntime/)
-[![Python](https://img.shields.io/pypi/pyversions/ytruntime.svg)](https://pypi.org/project/ytruntime/)
+[![PyPI Version](https://img.shields.io/pypi/v/ytruntime)](https://pypi.org/project/ytruntime/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/ytruntime)](https://pypi.org/project/ytruntime/)
 
 ## TL;DR
 
