@@ -1,8 +1,9 @@
 name: Update Homebrew formula
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - "v*"
 
 permissions:
   contents: read
