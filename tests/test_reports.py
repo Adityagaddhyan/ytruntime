@@ -1,7 +1,7 @@
 import json
 
+from ytruntime.exporters import stats_to_dict, write_csv_report, write_json_report
 from ytruntime.models import PlaylistStats, VideoMetadata
-from ytruntime.services.reports import stats_to_dict, write_csv_report, write_json_report
 
 
 def test_stats_to_dict() -> None:

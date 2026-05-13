@@ -10,7 +10,10 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [
-  { name = "ytruntime contributors" }
+  { name = "Aditya Gaddhyan" }
+]
+maintainers = [
+  { name = "Aditya Gaddhyan" }
 ]
 keywords = ["youtube", "playlist", "runtime", "cli", "yt-dlp"]
 classifiers = [
@@ -18,7 +21,9 @@ classifiers = [
   "Environment :: Console",
   "Intended Audience :: End Users/Desktop",
   "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
@@ -35,6 +40,7 @@ dependencies = [
 Homepage = "https://github.com/Adityagaddhyan/ytruntime"
 Repository = "https://github.com/Adityagaddhyan/ytruntime"
 Issues = "https://github.com/Adityagaddhyan/ytruntime/issues"
+Changelog = "https://github.com/Adityagaddhyan/ytruntime/releases"
 
 [project.optional-dependencies]
 dev = [

@@ -2,7 +2,7 @@ from typing import Any
 
 import pytest
 
-from ytruntime.services.playlist import InvalidPlaylistUrlError, PlaylistService
+from ytruntime.services.playlist import EmptyPlaylistError, InvalidPlaylistUrlError, PlaylistService
 
 
 class FakePlaylistService(PlaylistService):
@@ -47,3 +47,10 @@ def test_invalid_range_is_rejected() -> None:
 
     with pytest.raises(ValueError, match="start"):
         service.fetch_stats("https://www.youtube.com/playlist?list=abc", start=10, end=2)
+
+
+def test_empty_playlist_is_rejected() -> None:
+    service = FakePlaylistService({"entries": []})
+
+    with pytest.raises(EmptyPlaylistError):
+        service.fetch_stats("https://www.youtube.com/playlist?list=abc")
