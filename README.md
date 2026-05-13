@@ -1,7 +1,7 @@
 # ytruntime
 
 [![CI](https://github.com/Adityagaddhyan/ytruntime/actions/workflows/ci.yml/badge.svg)](https://github.com/Adityagaddhyan/ytruntime/actions/workflows/ci.yml)
-[![PyPI Version](https://img.shields.io/pypi/v/ytruntime)](https://pypi.org/project/ytruntime/)
+[![PyPI](https://img.shields.io/pypi/v/ytruntime)](https://pypi.org/project/ytruntime/)
 [![Python Versions](https://img.shields.io/pypi/pyversions/ytruntime)](https://pypi.org/project/ytruntime/)
 [![Homebrew Tap](https://img.shields.io/badge/Homebrew-Adityagaddhyan%2Ftap-fbb040?logo=homebrew&logoColor=000)](https://github.com/Adityagaddhyan/homebrew-tap)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)

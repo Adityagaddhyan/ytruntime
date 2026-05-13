@@ -1,0 +1,132 @@
+name: Update Homebrew formula
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  update-homebrew:
+    name: Update tap formula
+    runs-on: ubuntu-latest
+
+    steps:
+      # This repository is checked out for workflow context only. The formula
+      # lives in the separate Homebrew tap repository cloned below.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Clone the tap with a token that has write access to
+      # Adityagaddhyan/homebrew-tap.
+      - name: Clone Homebrew tap
+        env:
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${HOMEBREW_TAP_TOKEN}@github.com/Adityagaddhyan/homebrew-tap.git" homebrew-tap
+
+      # Fetch the latest PyPI sdist metadata and update only the formula's
+      # source URL and SHA256. Dependency resource blocks are intentionally
+      # preserved as-is.
+      - name: Update formula from PyPI
+        run: |
+          python3 <<'PY'
+          import json
+          import hashlib
+          import re
+          import time
+          import urllib.request
+          from pathlib import Path
+
+          PACKAGE = "ytruntime"
+          PYPI_JSON_URL = f"https://pypi.org/pypi/{PACKAGE}/json"
+          FORMULA = Path("homebrew-tap/Formula/ytruntime.rb")
+
+
+          def fetch_pypi_metadata() -> dict:
+              last_error = None
+              for attempt in range(1, 6):
+                  try:
+                      with urllib.request.urlopen(PYPI_JSON_URL, timeout=30) as response:
+                          return json.load(response)
+                  except Exception as exc:
+                      last_error = exc
+                      if attempt < 5:
+                          time.sleep(attempt * 5)
+
+              raise RuntimeError(f"failed to fetch PyPI metadata: {last_error}") from last_error
+
+
+          def latest_sdist(metadata: dict) -> tuple[str, str]:
+              version = metadata["info"]["version"]
+              for artifact in metadata.get("urls", []):
+                  if artifact.get("packagetype") == "sdist":
+                      url = artifact.get("url")
+                      if not url:
+                          raise RuntimeError("sdist metadata is missing url")
+                      return version, url
+
+              raise RuntimeError(f"no sdist found for {PACKAGE} {version}")
+
+
+          def compute_sha256(url: str) -> str:
+              digest = hashlib.sha256()
+              with urllib.request.urlopen(url, timeout=60) as response:
+                  while chunk := response.read(1024 * 1024):
+                      digest.update(chunk)
+              return digest.hexdigest()
+
+
+          def replace_first(lines: list[str], pattern: str, replacement: str, start: int = 0) -> int:
+              compiled = re.compile(pattern)
+              for index in range(start, len(lines)):
+                  match = compiled.match(lines[index])
+                  if match:
+                      lines[index] = f'{match.group("indent")}{replacement}\n'
+                      return index
+
+              raise RuntimeError(f"could not find formula line matching {pattern!r}")
+
+
+          metadata = fetch_pypi_metadata()
+          version, sdist_url = latest_sdist(metadata)
+          sdist_sha256 = compute_sha256(sdist_url)
+
+          if not FORMULA.exists():
+              raise RuntimeError(f"formula not found: {FORMULA}")
+
+          lines = FORMULA.read_text().splitlines(keepends=True)
+          url_index = replace_first(
+              lines,
+              r'^(?P<indent>\s*)url\s+["\'][^"\']+["\']\s*$',
+              f'url "{sdist_url}"',
+          )
+          replace_first(
+              lines,
+              r'^(?P<indent>\s*)sha256\s+["\'][0-9a-fA-F]+["\']\s*$',
+              f'sha256 "{sdist_sha256}"',
+              start=url_index + 1,
+          )
+
+          FORMULA.write_text("".join(lines))
+          Path("homebrew-version.txt").write_text(version)
+          print(f"Updated {FORMULA} to {version}")
+          PY
+
+      # Commit only when the formula changed, which keeps repeat workflow runs
+      # from creating empty commits.
+      - name: Commit and push formula update
+        working-directory: homebrew-tap
+        run: |
+          if git diff --quiet -- Formula/ytruntime.rb; then
+            echo "Formula/ytruntime.rb is already up to date."
+            exit 0
+          fi
+
+          VERSION="$(cat ../homebrew-version.txt)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/ytruntime.rb
+          git commit -m "Update ytruntime formula to ${VERSION}"
+          git push origin HEAD
