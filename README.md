@@ -136,20 +136,32 @@ uv tool install .
 
 ## Release
 
-Releases are built by GitHub Actions when a tag like `v1.0.0` is pushed. The
-workflow builds the wheel and source distribution, publishes to PyPI, and creates
-a GitHub release with the artifacts.
+Releases are built by GitHub Actions when a tag like `v0.1.0` is pushed. The
+release workflow runs tests, builds the wheel and source distribution, uploads
+the artifacts, publishes to PyPI, and creates a GitHub Release with generated
+release notes.
 
-Recommended PyPI setup:
+Maintainer setup:
 
 1. Create the `ytruntime` project on PyPI.
-2. Configure PyPI Trusted Publishing for this repository and the
-   `.github/workflows/release.yml` workflow.
-3. No `PYPI_API_TOKEN` secret is needed when Trusted Publishing is configured.
+2. Create a PyPI API token with permission to publish `ytruntime`.
+3. Add the token to this GitHub repository as a secret named `PYPI_API_TOKEN`.
 
-If using token publishing instead, add a repository secret named
-`PYPI_API_TOKEN` and update the release workflow to pass it to
-`pypa/gh-action-pypi-publish`.
+Publish a new version:
+
+```bash
+uv sync --extra dev --frozen
+uv run ruff check .
+uv run pytest
+uv build
+git status
+git tag v0.1.0
+git push origin main
+git push origin v0.1.0
+```
+
+Use a new tag for every release. PyPI does not allow replacing an already
+published version, so update `version` in `pyproject.toml` before tagging.
 
 ## Homebrew Prep
 
