@@ -3,8 +3,8 @@
 ## TL;DR
 
 ```bash
-uv sync --extra dev
-uv run ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID"
+uv tool install git+https://github.com/Adityagaddhyan/ytruntime.git
+ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID"
 ```
 
 `ytruntime` is a Python CLI that calculates runtime statistics for YouTube
@@ -15,16 +15,41 @@ per-video durations with titles.
 
 Requires Python 3.11+.
 
+Install directly from GitHub:
+
 ```bash
-uv sync --extra dev
-uv pip install -e .
+uv tool install git+https://github.com/Adityagaddhyan/ytruntime.git
 ```
 
-The package exposes this executable command:
+Or with `pipx`:
+
+```bash
+pipx install git+https://github.com/Adityagaddhyan/ytruntime.git
+```
+
+After publishing to PyPI, users can install it by package name:
+
+```bash
+uv tool install ytruntime
+pipx install ytruntime
+pip install ytruntime
+```
+
+All install methods expose the executable:
 
 ```bash
 ytruntime
 ```
+
+Homebrew support should live in a tap, for example:
+
+```bash
+brew tap Adityagaddhyan/tap
+brew install ytruntime
+```
+
+That requires publishing a Homebrew formula in `Adityagaddhyan/homebrew-tap`
+after a tagged release is available.
 
 ## Usage
 
@@ -71,7 +96,8 @@ ytruntime shortest "https://www.youtube.com/playlist?list=PLAYLIST_ID" --limit 1
 ## Development
 
 ```bash
+uv sync --extra dev
+uv run ytruntime --help
 uv run pytest
 uv run ruff check .
 ```
-
