@@ -8,6 +8,7 @@ import typer
 from ytruntime.commands.shared import (
     EndOption,
     PlaylistUrlArg,
+    SpeedOption,
     StartOption,
     load_stats,
     render_summary,
@@ -32,9 +33,10 @@ def stats(
         Path | None,
         typer.Option("--csv", help="Write a CSV report to this path."),
     ] = None,
+    speed: SpeedOption = None,
 ) -> None:
     """Print playlist runtime statistics."""
     playlist_stats = load_stats(playlist_url, start, end)
-    render_summary(playlist_stats)
+    render_summary(playlist_stats, speeds=speed)
     render_video_table(playlist_stats.videos)
-    write_reports(playlist_stats, json_output=json_output, csv_output=csv_output)
+    write_reports(playlist_stats, json_output=json_output, csv_output=csv_output, speeds=speed)

@@ -22,6 +22,21 @@ def test_stats_to_dict() -> None:
     assert payload["total_seconds"] == 181
     assert payload["average_seconds"] == 90
     assert payload["videos"][0]["duration"] == "1m 01s"
+    assert [speed["label"] for speed in payload["playback_speeds"]] == [
+        "1x",
+        "1.25x",
+        "1.75x",
+        "2x",
+    ]
+
+
+def test_stats_to_dict_includes_custom_speed() -> None:
+    stats = PlaylistStats(videos=[VideoMetadata(index=1, title="Intro", duration_seconds=120)])
+
+    payload = stats_to_dict(stats, speeds=[1.5])
+
+    labels = [speed["label"] for speed in payload["playback_speeds"]]
+    assert labels == ["1x", "1.25x", "1.5x", "1.75x", "2x"]
 
 
 def test_write_reports(tmp_path) -> None:
@@ -33,4 +48,7 @@ def test_write_reports(tmp_path) -> None:
     write_csv_report(stats, csv_path)
 
     assert json.loads(json_path.read_text(encoding="utf-8"))["videos_selected"] == 1
-    assert "index,duration_seconds,duration,title,url" in csv_path.read_text(encoding="utf-8")
+    assert (
+        "index,duration_seconds,duration,duration_1x,duration_1.25x,duration_1.75x,"
+        "duration_2x,title,url"
+    ) in csv_path.read_text(encoding="utf-8")

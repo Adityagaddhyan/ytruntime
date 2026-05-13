@@ -70,6 +70,16 @@ ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID" --json repor
 ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID" --csv report.csv
 ```
 
+By default, stats also show playback-adjusted runtimes for `1x`, `1.25x`,
+`1.75x`, and `2x`.
+
+Add custom playback speeds:
+
+```bash
+ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID" --speed 1.5
+ytruntime stats "https://www.youtube.com/playlist?list=PLAYLIST_ID" --speed 1.5 --speed 3
+```
+
 Use the dedicated export command:
 
 ```bash

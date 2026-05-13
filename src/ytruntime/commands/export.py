@@ -9,6 +9,7 @@ from ytruntime.commands.shared import (
     EndOption,
     ExportFormat,
     PlaylistUrlArg,
+    SpeedOption,
     StartOption,
     console,
     load_stats,
@@ -29,11 +30,12 @@ def export(
     ] = ExportFormat.json,
     start: StartOption = None,
     end: EndOption = None,
+    speed: SpeedOption = None,
 ) -> None:
     """Export playlist statistics without printing the full video table."""
     playlist_stats = load_stats(playlist_url, start, end)
     if report_format is ExportFormat.json:
-        write_json_report(playlist_stats, output)
+        write_json_report(playlist_stats, output, speeds=speed)
     else:
-        write_csv_report(playlist_stats, output)
+        write_csv_report(playlist_stats, output, speeds=speed)
     console.print(f"[green]{report_format.value.upper()} report written:[/] {output}")

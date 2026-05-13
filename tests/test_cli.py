@@ -52,8 +52,31 @@ def test_stats_command_renders_summary(monkeypatch) -> None:
 
     assert result.exit_code == 0
     assert "Playlist Statistics" in result.output
+    assert "Playback Speeds" in result.output
+    assert "1.25x" in result.output
     assert "Course" in result.output
     assert "Intro" in result.output
+
+
+def test_stats_command_accepts_custom_speed(monkeypatch) -> None:
+    monkeypatch.setattr("ytruntime.commands.shared.PlaylistService", FakePlaylistService)
+
+    result = runner.invoke(
+        app,
+        [
+            "stats",
+            "https://www.youtube.com/playlist?list=abc",
+            "--start",
+            "1",
+            "--end",
+            "2",
+            "--speed",
+            "1.5",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert "1.5x" in result.output
 
 
 def test_invalid_url_renders_error_panel() -> None:

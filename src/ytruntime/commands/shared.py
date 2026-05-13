@@ -17,7 +17,12 @@ from ytruntime.services.playlist import (
     InvalidPlaylistUrlError,
     PlaylistFetchError,
 )
-from ytruntime.utils import format_duration
+from ytruntime.utils import (
+    adjusted_duration_seconds,
+    format_duration,
+    format_speed,
+    normalize_speeds,
+)
 
 console = Console()
 error_console = Console(stderr=True)
@@ -25,6 +30,14 @@ error_console = Console(stderr=True)
 PlaylistUrlArg = Annotated[str, typer.Argument(help="YouTube playlist URL.")]
 StartOption = Annotated[int | None, typer.Option("--start", help="1-based start index.")]
 EndOption = Annotated[int | None, typer.Option("--end", help="1-based end index, inclusive.")]
+SpeedOption = Annotated[
+    list[float] | None,
+    typer.Option(
+        "--speed",
+        min=0.1,
+        help="Additional playback speed to include. Can be used multiple times.",
+    ),
+]
 
 
 class ExportFormat(StrEnum):
@@ -45,7 +58,7 @@ def load_stats(playlist_url: str, start: int | None, end: int | None) -> Playlis
         raise typer.Exit(code=1) from exc
 
 
-def render_summary(stats: PlaylistStats) -> None:
+def render_summary(stats: PlaylistStats, *, speeds: list[float] | None = None) -> None:
     lines = [
         f"[bold]Videos Selected[/] : {stats.total_videos}",
         f"[bold]Total Runtime[/]   : {format_duration(stats.total_seconds)}",
@@ -65,6 +78,24 @@ def render_summary(stats: PlaylistStats) -> None:
     if stats.skipped_count:
         print_warning(f"Skipped {stats.skipped_count} unavailable or duration-less video(s).")
 
+    render_speed_table(stats, speeds=speeds)
+
+
+def render_speed_table(stats: PlaylistStats, *, speeds: list[float] | None = None) -> None:
+    table = Table(title="Playback Speeds", show_lines=False, header_style="bold magenta")
+    table.add_column("Speed", style="magenta", no_wrap=True)
+    table.add_column("Total Runtime", style="green", no_wrap=True)
+    table.add_column("Average Runtime", style="cyan", no_wrap=True)
+
+    for speed in normalize_speeds(speeds):
+        table.add_row(
+            format_speed(speed),
+            format_duration(adjusted_duration_seconds(stats.total_seconds, speed)),
+            format_duration(adjusted_duration_seconds(stats.average_seconds, speed)),
+        )
+
+    console.print(table)
+
 
 def render_video_table(videos: list[VideoMetadata], *, title: str = "Videos") -> None:
     table = Table(title=title, show_lines=False, header_style="bold cyan")
@@ -82,12 +113,13 @@ def write_reports(
     *,
     json_output: Path | None = None,
     csv_output: Path | None = None,
+    speeds: list[float] | None = None,
 ) -> None:
     if json_output is not None:
-        write_json_report(stats, json_output)
+        write_json_report(stats, json_output, speeds=speeds)
         console.print(f"[green]JSON report written:[/] {json_output}")
     if csv_output is not None:
-        write_csv_report(stats, csv_output)
+        write_csv_report(stats, csv_output, speeds=speeds)
         console.print(f"[green]CSV report written:[/] {csv_output}")
 
 

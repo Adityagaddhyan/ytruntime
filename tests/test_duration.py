@@ -1,6 +1,12 @@
 import pytest
 
-from ytruntime.utils import format_duration, parse_duration
+from ytruntime.utils import (
+    adjusted_duration_seconds,
+    format_duration,
+    format_speed,
+    normalize_speeds,
+    parse_duration,
+)
 
 
 @pytest.mark.parametrize(
@@ -36,3 +42,21 @@ def test_format_duration_rejects_negative_values() -> None:
 )
 def test_parse_duration(value: object, expected: int | None) -> None:
     assert parse_duration(value) == expected
+
+
+def test_default_playback_speeds_include_expected_values() -> None:
+    assert normalize_speeds() == [1.0, 1.25, 1.75, 2.0]
+
+
+def test_custom_playback_speed_is_added() -> None:
+    assert normalize_speeds([1.5, 1.25]) == [1.0, 1.25, 1.5, 1.75, 2.0]
+
+
+def test_adjusted_duration_seconds() -> None:
+    assert adjusted_duration_seconds(120, 1.0) == 120
+    assert adjusted_duration_seconds(120, 1.5) == 80
+
+
+def test_format_speed() -> None:
+    assert format_speed(1.0) == "1x"
+    assert format_speed(1.25) == "1.25x"
