@@ -5,6 +5,8 @@
 [![Python Versions](https://img.shields.io/pypi/pyversions/ytruntime)](https://pypi.org/project/ytruntime/)
 [![Homebrew Tap](https://img.shields.io/badge/Homebrew-Adityagaddhyan%2Ftap-fbb040?logo=homebrew&logoColor=000)](https://github.com/Adityagaddhyan/homebrew-tap)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Adityagaddhyan)
+[![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/adityagaddhyan)
 
 ## TL;DR
 
@@ -205,6 +207,11 @@ brew install --build-from-source Adityagaddhyan/tap/ytruntime
 brew test Adityagaddhyan/tap/ytruntime
 brew audit --strict Adityagaddhyan/tap/ytruntime
 ```
+
+## Support
+
+If ytruntime saves you time, you can [sponsor me on GitHub](https://github.com/sponsors/Adityagaddhyan)
+or [buy me a coffee](https://buymeacoffee.com/adityagaddhyan) ☕
 
 ## License
 
